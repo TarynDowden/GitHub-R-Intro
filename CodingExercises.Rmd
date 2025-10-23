@@ -1,0 +1,43 @@
+---
+title: "Coding Exercises"
+author: "Taryn Dowden"
+date: "2025-10-23"
+output: html_document
+---
+```{r}
+source("source.R")
+```
+Data
+```{r}
+data("knz_bison")
+```
+
+Create a new column in the bison dataset that calculates the individual’s age at the time of observation.
+```{r}
+mutate(knz_bison, age = rec_year - animal_yob)
+```
+
+Write a function that will first filter the bison dataset based on any user-specified weight threshold (returning the filtered dataset).
+```{r}
+weight_filter <- function(a,b){
+  bison_wgt_filter <- filter(knz_bison, between(animal_weight, a, b))
+  print(bison_wgt_filter)}
+
+```
+
+Create a boxplot showing weight distribution between male and female bison, and then conduct a t-test to see if weight is significantly difference between males and females.
+```{r}
+knz_bison %>%
+  ggplot(aes(x=animal_sex, y = animal_weight)) +
+  geom_boxplot()
+```
+```{r}
+knz_bison %>%
+  levene_test(animal_weight ~ animal_sex)
+```
+Very small P value indicate variances are not equal
+```{r}
+knz_bison %>%
+  t_test (animal_weight ~ animal_sex, var.equal = FALSE, detailed = TRUE)
+```
+Very small p value indicates a significant difference in weights between males and females
